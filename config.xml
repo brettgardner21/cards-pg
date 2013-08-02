@@ -22,6 +22,9 @@
     <feature name="http://api.phonegap.com/1.0/media"/>
     <feature name="http://api.phonegap.com/1.0/network"/>
     <feature name="http://api.phonegap.com/1.0/notification"/>
-    <gap:plugin name="org.apache.cordova.facebook.Connect" />
+    <gap:plugin name="com.phonegap.plugins.facebookconnect">
+        <param name="APP_ID" value="306588442718313" />
+        <param name="APP_NAME" value="Cards Workout" />
+    </gap:plugin>
  
 </widget>
