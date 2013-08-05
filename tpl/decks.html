@@ -1,0 +1,22 @@
+<header class="bar-title">
+    <a class="button back" href="#">Back</a>
+    <h1 class="title">Decks</h1>
+    <a class="button" href="#menu">Menu</a>
+</header>
+
+<div class="content">
+
+    {{#if .}}
+    <ul class="list">
+        {{#each .}}
+        <li style="clear: both">
+            <a href="#deck/{{id}}">
+                {{name}}
+                <span class="chevron"></span>
+            </a>
+        </li>
+        {{/each}}
+    </ul>
+    {{/if}}
+
+</div>

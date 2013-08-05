@@ -23,7 +23,8 @@ fb.MobileRouter = Backbone.Router.extend({
         "person/:id/feed":          "feed",
         "revoke":                   "revoke",
         "post":                     "post",
-        "postui":                   "postui"
+        "postui":                   "postui",
+        "decks":                    "decks"
     },
 
     welcome: function () {
@@ -167,6 +168,25 @@ fb.MobileRouter = Backbone.Router.extend({
             });
     },
 
+    decks: function(){
+        var self = this;
+        var view = new fb.views.Decks({template: fb.templateLoader.get('decks')});
+
+
+        var Decks = Parse.Object.extend("Deck");
+        var query = new Parse.Query(Decks);
+        query.find({
+          success: function(results) {
+            alert("Successfully retrieved " + results.length + " decks.");
+            // Do something with the returned Parse.Object values
+          },
+          error: function(error) {
+            alert("Error: " + error.code + " " + error.message);
+          }
+        });
+
+    },
+
     feed: function (id) {
         var self = this;
         var view = new fb.views.Feed({template: fb.templateLoader.get('feed')});
@@ -225,6 +245,9 @@ $(document).on('ready', function () {
             fb.router.navigate("", {trigger: true});
         }
     });
+
+    Parse.initialize("h4t4vpIJakzrHVXwSvvfBwwTJL5ZCbGD6cTzWhKo", "jQRZxUSfeC0W5wflwFDjhEaoVfHS1600k3Y0KT5K");
+
 
 });
 
