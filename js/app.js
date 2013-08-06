@@ -178,24 +178,36 @@ fb.MobileRouter = Backbone.Router.extend({
         Parse.initialize("h4t4vpIJakzrHVXwSvvfBwwTJL5ZCbGD6cTzWhKo", "jQRZxUSfeC0W5wflwFDjhEaoVfHS1600k3Y0KT5K");
         var Decks = Parse.Object.extend("Deck");
         var query = new Parse.Query(Decks);
-        query.find({
-          success: function(results) {
 
-            var jsonArray = [];
+        $.when(slide)
+            .done(function(slideResp) {
 
-            for(var i = 0; i < results.length; i++) {
-               jsonArray.push(results[i].toJSON());
-            }
+                query.find({
+                  success: function(results) {
 
-            view.model = jsonArray;
-            view.render();
-            fb.spinner.hide();
-          },
-          error: function(error) {
-            self.showErrorPage();
-            fb.spinner.hide();
-          }
-        });
+                    var jsonArray = [];
+
+                    for(var i = 0; i < results.length; i++) {
+                       jsonArray.push(results[i].toJSON());
+                    }
+
+                    view.model = jsonArray;
+                    view.render();
+                    fb.spinner.hide();
+                  },
+                  error: function(error) {
+                    self.showErrorPage();
+                  }
+                });
+            })
+            .fail(function() {
+                self.showErrorPage();
+            })
+            .always(function() {
+                fb.spinner.hide();
+            });
+        
+
 
     },
 
