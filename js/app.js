@@ -231,7 +231,7 @@ fb.MobileRouter = Backbone.Router.extend({
 
 $(document).on('ready', function () {
 
-    fb.templateLoader.load(['menu', 'welcome', 'login', 'person', 'friends', 'feed', 'post', 'postui', 'error', 'revoke'], function () {
+    fb.templateLoader.load(['menu', 'welcome', 'login', 'person', 'friends', 'feed', 'post', 'postui', 'error', 'revoke', 'decks'], function () {
         fb.router = new fb.MobileRouter();
         Backbone.history.start();
         FB.init({ appId: "306588442718313", nativeInterface: CDV.FB, useCachedDialogs: false, status: true });
