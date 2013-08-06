@@ -14,6 +14,8 @@
     <author href="http://oo-rah.com" email="brett.gardner@gmail.com">
         Brett Gardner
     </author>
+
+    <access origin="*" />
  
     <feature name="http://api.phonegap.com/1.0/camera"/>
     <feature name="http://api.phonegap.com/1.0/contacts"/>
