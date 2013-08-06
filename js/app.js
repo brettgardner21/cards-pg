@@ -179,8 +179,14 @@ fb.MobileRouter = Backbone.Router.extend({
         var query = new Parse.Query(Decks);
         query.find({
           success: function(results) {
-            fb.alert(results);
-            view.model = results;
+
+            var jsonArray = [];
+
+            for(var i = 0; i < feeds.length; i++) {
+               jsonArray.push(results[i].toJSON());
+            }
+
+            view.model = jsonArray;
             view.render();
             fb.spinner.hide();
           },
