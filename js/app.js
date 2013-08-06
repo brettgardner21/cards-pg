@@ -170,8 +170,8 @@ fb.MobileRouter = Backbone.Router.extend({
 
     decks: function(){
         var self = this;
-        var view = new fb.views.Decks({template: fb.templateLoader.get('decks')});
-
+        //var view = new fb.views.Decks({template: fb.templateLoader.get('decks')});
+        fb.alert("about to test parse");
         Parse.initialize("h4t4vpIJakzrHVXwSvvfBwwTJL5ZCbGD6cTzWhKo", "jQRZxUSfeC0W5wflwFDjhEaoVfHS1600k3Y0KT5K");
         var Decks = Parse.Object.extend("Deck");
         var query = new Parse.Query(Decks);
