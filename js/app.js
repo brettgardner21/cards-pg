@@ -172,16 +172,16 @@ fb.MobileRouter = Backbone.Router.extend({
         var self = this;
         var view = new fb.views.Decks({template: fb.templateLoader.get('decks')});
 
-
+        Parse.initialize("h4t4vpIJakzrHVXwSvvfBwwTJL5ZCbGD6cTzWhKo", "jQRZxUSfeC0W5wflwFDjhEaoVfHS1600k3Y0KT5K");
         var Decks = Parse.Object.extend("Deck");
         var query = new Parse.Query(Decks);
         query.find({
           success: function(results) {
-            alert("Successfully retrieved " + results.length + " decks.");
+            fb.alert("Successfully retrieved " + results.length + " decks.");
             // Do something with the returned Parse.Object values
           },
           error: function(error) {
-            alert("Error: " + error.code + " " + error.message);
+            fb.alert("Error: " + error.code + " " + error.message);
           }
         });
 
@@ -245,10 +245,6 @@ $(document).on('ready', function () {
             fb.router.navigate("", {trigger: true});
         }
     });
-
-    Parse.initialize("h4t4vpIJakzrHVXwSvvfBwwTJL5ZCbGD6cTzWhKo", "jQRZxUSfeC0W5wflwFDjhEaoVfHS1600k3Y0KT5K");
-
-
 });
 
 $(document).on('click', '.button.back', function() {
