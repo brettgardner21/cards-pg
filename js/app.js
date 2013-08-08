@@ -175,13 +175,14 @@ fb.MobileRouter = Backbone.Router.extend({
             fb.spinner.show();
         });
         
+        Parse.initialize("h4t4vpIJakzrHVXwSvvfBwwTJL5ZCbGD6cTzWhKo", "jQRZxUSfeC0W5wflwFDjhEaoVfHS1600k3Y0KT5K");
         var Decks = Parse.Object.extend("Deck");
         var query = new Parse.Query(Decks);
         var call = parseWrapper.find(query);
 
         $.when(slide, call)
-            .done(function(slideResp,results) {
-                view.model = resutls.data;
+            .done(function(slideResp,callResp) {
+                view.model = callResp;
                 view.render();
             })
             .fail(function() {
@@ -236,7 +237,6 @@ $(document).on('ready', function () {
         fb.router = new fb.MobileRouter();
         Backbone.history.start();
         FB.init({ appId: "306588442718313", nativeInterface: CDV.FB, useCachedDialogs: false, status: true });
-        Parse.initialize("h4t4vpIJakzrHVXwSvvfBwwTJL5ZCbGD6cTzWhKo", "jQRZxUSfeC0W5wflwFDjhEaoVfHS1600k3Y0KT5K");
     });
 
     FB.Event.subscribe('auth.statusChange', function(event) {
