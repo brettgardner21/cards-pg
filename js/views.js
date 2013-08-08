@@ -62,6 +62,19 @@ fb.views.Decks = Backbone.View.extend({
 
 });
 
+fb.views.Deck = Backbone.View.extend({
+
+    initialize: function () {
+        this.render();
+    },
+
+    render: function () {
+        this.$el.html(this.options.template(this.model));
+        return this;
+    }
+
+});
+
 fb.views.Friends = Backbone.View.extend({
 
     initialize: function () {

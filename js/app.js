@@ -4,6 +4,10 @@ window.addEventListener('load', function () {
 
 var fb = new MobileApp();
 
+/*Parse stuff for now */
+Parse.initialize("h4t4vpIJakzrHVXwSvvfBwwTJL5ZCbGD6cTzWhKo", "jQRZxUSfeC0W5wflwFDjhEaoVfHS1600k3Y0KT5K");
+var Decks = Parse.Object.extend("Deck");
+
 fb.spinner = $("#spinner");
 fb.spinner.hide();
 
@@ -24,7 +28,8 @@ fb.MobileRouter = Backbone.Router.extend({
         "revoke":                   "revoke",
         "post":                     "post",
         "postui":                   "postui",
-        "decks":                    "decks"
+        "decks":                    "decks",
+        "deck/:id":                 "deck"
     },
 
     welcome: function () {
@@ -175,9 +180,32 @@ fb.MobileRouter = Backbone.Router.extend({
             fb.spinner.show();
         });
         
-        Parse.initialize("h4t4vpIJakzrHVXwSvvfBwwTJL5ZCbGD6cTzWhKo", "jQRZxUSfeC0W5wflwFDjhEaoVfHS1600k3Y0KT5K");
+        var query = new Parse.Query(Decks);
+        var call = parseWrapper.find(query);
+
+        $.when(slide, call)
+            .done(function(slideResp,callResp) {
+                view.model = callResp;
+                view.render();
+            })
+            .fail(function() {
+                self.showErrorPage();
+            })
+            .always(function() {
+                fb.spinner.hide();
+            });
+    },
+
+    deck: function (id) {
+        var self = this;
+        var view = new fb.views.Deck({template: fb.templateLoader.get('deck')});
+        var slide = fb.slider.slidePage(view.$el).done(function(){
+            fb.spinner.show();
+        });
+
         var Decks = Parse.Object.extend("Deck");
         var query = new Parse.Query(Decks);
+        query.equalTo("objectId", id);
         var call = parseWrapper.find(query);
 
         $.when(slide, call)
@@ -233,7 +261,7 @@ fb.MobileRouter = Backbone.Router.extend({
 
 $(document).on('ready', function () {
 
-    fb.templateLoader.load(['menu', 'welcome', 'login', 'person', 'friends', 'feed', 'post', 'postui', 'error', 'revoke', 'decks'], function () {
+    fb.templateLoader.load(['menu', 'welcome', 'login', 'person', 'friends', 'feed', 'post', 'postui', 'error', 'revoke', 'decks', 'deck'], function () {
         fb.router = new fb.MobileRouter();
         Backbone.history.start();
         FB.init({ appId: "306588442718313", nativeInterface: CDV.FB, useCachedDialogs: false, status: true });

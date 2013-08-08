@@ -1,0 +1,14 @@
+<header class="bar-title">
+    <a class="button back" href="#">Back</a>
+    <h1 class="title">Deck</h1>
+    <a class="button" href="#menu">Menu</a>
+</header>
+<div class="content content-padded">
+{{#if .}}
+    <img src="https://graph.facebook.com/me/picture?width=150&height=150" class="avatar" />
+    <h2>{{ name }}</h2>
+    <p>{{description}}</p>
+    <br/>
+    <a href="#workout?deckId={{ objectId }}" class="button-block">New Workout</a>
+{{/if}}
+</div>
