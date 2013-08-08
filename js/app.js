@@ -181,7 +181,7 @@ fb.MobileRouter = Backbone.Router.extend({
 
         $.when(slide, call)
             .done(function(slideResp,results) {
-                view.model = resutls;
+                view.model = resutls.data;
                 view.render();
             })
             .fail(function() {
