@@ -6,7 +6,6 @@ var fb = new MobileApp();
 
 /*Parse stuff for now */
 Parse.initialize("h4t4vpIJakzrHVXwSvvfBwwTJL5ZCbGD6cTzWhKo", "jQRZxUSfeC0W5wflwFDjhEaoVfHS1600k3Y0KT5K");
-var Decks = Parse.Object.extend("Deck");
 
 fb.spinner = $("#spinner");
 fb.spinner.hide();
@@ -30,6 +29,8 @@ fb.MobileRouter = Backbone.Router.extend({
         "postui":                   "postui",
         "decks":                    "decks",
         "deck/:id":                 "deck"
+        "workout":                  "workout",
+        'workout?*deckId' :         "workout"
     },
 
     welcome: function () {
@@ -180,7 +181,7 @@ fb.MobileRouter = Backbone.Router.extend({
             fb.spinner.show();
         });
         
-        var query = new Parse.Query(Decks);
+        var query = new Parse.Query(fb.models.Deck);
         var call = parseWrapper.find(query);
 
         $.when(slide, call)
@@ -203,8 +204,8 @@ fb.MobileRouter = Backbone.Router.extend({
             fb.spinner.show();
         });
 
-        var Decks = Parse.Object.extend("Deck");
-        var query = new Parse.Query(Decks);
+        
+        var query = new Parse.Query(fb.models.Deck);
         query.equalTo("objectId", id);
         var call = parseWrapper.find(query);
 
@@ -220,6 +221,26 @@ fb.MobileRouter = Backbone.Router.extend({
                 fb.spinner.hide();
             });
     },
+
+    workout: function () {
+        var self = this;
+        var view = new fb.views.Workout({template: fb.templateLoader.get('workout')});
+        var slide = fb.slider.slidePage(view.$el).done(function(){
+            fb.spinner.show();
+        });
+
+        $.when(slide)
+            .done(function(slideResp) {
+                view.render();
+                var ws = new WorkoutSession(cards);
+            })
+            .fail(function() {
+                self.showErrorPage();
+            })
+            .always(function() {
+                fb.spinner.hide();
+            });
+    },    
 
     feed: function (id) {
         var self = this;
@@ -261,7 +282,7 @@ fb.MobileRouter = Backbone.Router.extend({
 
 $(document).on('ready', function () {
 
-    fb.templateLoader.load(['menu', 'welcome', 'login', 'person', 'friends', 'feed', 'post', 'postui', 'error', 'revoke', 'decks', 'deck'], function () {
+    fb.templateLoader.load(['menu', 'welcome', 'login', 'person', 'friends', 'feed', 'post', 'postui', 'error', 'revoke', 'decks', 'deck', 'workout'], function () {
         fb.router = new fb.MobileRouter();
         Backbone.history.start();
         FB.init({ appId: "306588442718313", nativeInterface: CDV.FB, useCachedDialogs: false, status: true });

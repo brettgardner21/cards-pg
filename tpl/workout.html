@@ -1,0 +1,16 @@
+<header class="bar-title">
+    <a class="button back" href="#">Back</a>
+    <div id="timer" class="timer title">0:00</div>
+    <a class="button pull-right" id="start">Start</a>
+    <a class="button pull-right" id="pause">Pause</a>
+    <a class="button pull-right" id="resume">Resume</a>
+</header>
+<div class="content content-padded">
+{{#if .}}
+    <img src="https://graph.facebook.com/me/picture?width=150&height=150" class="avatar" />
+    <h2>{{ name }}</h2>
+    <p>{{description}}</p>
+    <br/>
+    <a href="#workout?deckId={{ objectId }}" class="button-block">New Workout</a>
+{{/if}}
+</div>

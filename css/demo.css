@@ -1,0 +1,127 @@
+#card{width: 100%; max-width: 800px; display:block;margin: 0 auto;-webkit-border-radius:20px;height:280px;background-color:White;position:relative;}
+.card {width: 100%; max-width: 800px; display:block;margin: 0 auto;height:280px;background-color:White;position:relative;}
+.small {width:30%;height:60px;float:left;margin-right:3%;}
+.slid{position:relative}
+
+
+
+.panel {
+    width: 250px;
+    height: 350px;
+    font-size: .8em;
+    position:absolute;
+    left:50%;
+    margin-left:-125px;
+    -webkit-perspective: 600;
+    -moz-perspective: 600;
+    -webkit-transition-property: -webkit-transform;
+
+}
+
+/* -- make sure to declare a default for every property that you want animated -- */
+/* -- general styles, including Y axis rotation -- */
+.panel .front {
+    float: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 900;
+    width: 100%;
+    height: inherit;
+    background: white;
+    text-align: center;
+    border: 1px solid #ccc;
+    
+    -webkit-border-radius:10px;
+    
+    -webkit-transform: rotateY(0deg);
+    -webkit-transform-style: preserve-3d;
+    -webkit-backface-visibility: hidden;
+
+    -moz-transform: rotateY(0deg);
+    -moz-transform-style: preserve-3d;
+    -moz-backface-visibility: hidden;
+
+
+    
+    /* -- transition is the magic sauce for animation -- 
+    -o-transition: all .4s ease-in-out;
+    -ms-transition: all .4s ease-in-out;
+    -moz-transition: all .4s ease-in-out;
+    -webkit-transition: all .4s ease-in-out;
+    transition: all .4s ease-in-out;
+    */
+    /*--transitioning only the flip makes it MUCH smoother, instead of every attribute --*/
+    -o-transition: -webkit-transform .4s ease-in-out;
+    -ms-transition: -webkit-transform .4s ease-in-out;
+    -moz-transition: -webkit-transform .4s ease-in-out;
+    -webkit-transition: -webkit-transform .4s ease-in-out;
+    transition: -webkit-transform .4s ease-in-out;
+    
+    /*Test background images*/
+    background-size:200px 260px;
+    background-repeat:no-repeat;
+    background-position:25px 40px;
+}
+.panel.flip .front {
+    z-index: 900;
+    border-color: #eee;
+
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+    
+
+}
+
+.panel .back {
+    float: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 800;
+    width: 100%;
+    height: inherit;
+    background: #eee;
+    border: 1px solid #ccc;
+    
+    -webkit-border-radius:10px;
+    
+    -webkit-transform: rotateY(-180deg);
+    -webkit-transform-style: preserve-3d;
+    -webkit-backface-visibility: hidden;
+
+    -moz-transform: rotateY(-180deg);
+    -moz-transform-style: preserve-3d;
+    -moz-backface-visibility: hidden;
+
+    
+
+
+    /* -- transition is the magic sauce for animation -- */
+    -o-transition: -webkit-transform .4s ease-in-out;
+    -ms-transition: -webkit-transform .4s ease-in-out;
+    -moz-transition: -webkit-transform .4s ease-in-out;
+    -webkit-transition: -webkit-transform .4s ease-in-out;
+    transition: -webkit-transform .4s ease-in-out;
+}
+
+.panel.flip .back {
+    z-index: 1000;
+    
+    -webkit-transform: rotateY(0deg);
+    -moz-transform: rotateY(0deg);
+
+}
+
+/* -- cosmetics -- */
+.panel .pad {padding: 0 15px; }
+.block ol li {text-align: left; margin: 0 0 0 28px; }
+.block .action {display: block; padding: 3px; background: #333; text-align: right; font-size: .8em; opacity: 0; position: absolute; cursor: pointer; -webkit-transition: opacity .2s linear; }
+.block:hover .action {opacity: .7; }
+.circle div {border-radius: 100px; }
+.circle div h2 {padding-top: 3em; text-align: center; }
+
+div.action {display: block; position:absolute;top:0;right:0;padding: 10px; text-align: right; font-size: .8em; cursor: pointer;background-color:white;border:1px solid black;}
+
+#log{width:320px;display:block;overflow:hidden;}
+#timer{color:white;}

@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/ratchet.css">
     <link rel="stylesheet" href="css/pageslider.css">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/demo.css">
 </head>
 
 <body>
@@ -40,12 +41,29 @@
 <script src="lib/fastclick.js"></script>
 <script src="lib/pageslider.js"></script>
 <script src="lib/jquery-1.9.0.min.js"></script>
+<script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
 <script src="lib/underscore-min.js"></script>
 <script src="lib/backbone-min.js"></script>
 <script src="lib/handlebars.js"></script>
 <script src="js/utils.js"></script>
+<script src="js/models.js"></script>
 <script src="js/app.js"></script>
 <script src="js/views.js"></script>
 <script src="js/facebook.js"></script>
+<script src="js/workout.js"></script>
+<script id="cardTemplate" type="text/x-jquery-tmpl">
+<div id="${cardId}" class="click panel">
+    <div class="front" style="background-image: url(img/family2x.jpg);">
+        <div class="action">flip</div>
+        <h2>${face} ${suit}</h2>
+    </div>
+    <div class="back">
+        <div class="action">flip back</div>
+        <div class="pad">
+                <h2>check you on the flip side</h2>
+        </div>
+    </div>
+</div>
+</script>
 
 </html>
