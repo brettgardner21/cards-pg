@@ -4,6 +4,11 @@ window.addEventListener('load', function () {
 
 var fb = new MobileApp();
 
+/*temporary jimmy hat for models file*/
+fb.models.Deck = Parse.Object.extend("Deck");
+fb.models.Workout = Parse.Object.extend("Workout");
+fb.models.WorkoutCard = Parse.Object.extend("WorkoutCard");
+
 /*Parse stuff for now */
 Parse.initialize("h4t4vpIJakzrHVXwSvvfBwwTJL5ZCbGD6cTzWhKo", "jQRZxUSfeC0W5wflwFDjhEaoVfHS1600k3Y0KT5K");
 
@@ -28,7 +33,7 @@ fb.MobileRouter = Backbone.Router.extend({
         "post":                     "post",
         "postui":                   "postui",
         "decks":                    "decks",
-        "deck/:id":                 "deck"
+        "deck/:id":                 "deck",
         "workout":                  "workout",
         'workout?*deckId' :         "workout"
     },
@@ -286,6 +291,9 @@ $(document).on('ready', function () {
         fb.router = new fb.MobileRouter();
         Backbone.history.start();
         FB.init({ appId: "306588442718313", nativeInterface: CDV.FB, useCachedDialogs: false, status: true });
+        /*enable below for local testing*/
+        //fb.slider.removeCurrentPage();
+        //fb.router.navigate("menu", {trigger: true});
     });
 
     FB.Event.subscribe('auth.statusChange', function(event) {
