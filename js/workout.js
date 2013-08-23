@@ -213,7 +213,7 @@ function Card(/*string*/ gridid, workoutSession) {
         var velX = this.diffX/slideTime;
         this.diffX = 0; //reset difference for next touch event
         if(Math.abs(velX) > 1){
-            snd.play();
+            //snd.play();
             //slide right
             if(velX >1){
                 this.jqElement.css({
