@@ -5,10 +5,10 @@
 </header>
 <div class="content content-padded">
 {{#if .}}
-    <img src="https://graph.facebook.com/me/picture?width=150&height=150" class="avatar" />
     <h2>{{ name }}</h2>
     <p>{{description}}</p>
     <br/>
-    <a href="#workout?deckId={{ objectId }}" class="button-block">New Workout</a>
+    <a id="new" class="button-block">New Workout</a>
+    <a id="resume" class="button-block" style="display:none">Resume Workout</a>
 {{/if}}
 </div>

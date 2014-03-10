@@ -2,6 +2,7 @@ var MobileApp = function() {
 
     this.initialize = function() {
         this.models = {};
+        this.collections = {};
         this.views = {};
         this.templateLoader = new this.TemplateLoader();
     };
@@ -32,7 +33,7 @@ var MobileApp = function() {
     };
 
     this.alert = function(message, title) {
-        if (typeof(title)==='undefined') title = "Sociogram";
+        if (typeof(title)==='undefined') title = "Cards Workout";
         if (navigator.notification) {
             navigator.notification.alert(
                 message,
@@ -45,6 +46,23 @@ var MobileApp = function() {
         }
     };
 
+    this.msToHMS = function(s) {
+
+        function addZ(n) {
+            return (n < 10 ? '0' : '') + n;
+        }
+
+        var ms = s % 1000;
+        s = (s - ms) / 1000;
+        var secs = s % 60;
+        s = (s - secs) / 60;
+        var mins = s % 60;
+        var hrs = (s - mins) / 60;
+
+        return addZ(hrs) + ':' + addZ(mins) + ':' + addZ(secs) + '.' + (ms+"")[0];
+    };
+
     this.initialize();
 
 }
+

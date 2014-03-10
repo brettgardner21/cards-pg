@@ -1,16 +1,45 @@
 <header class="bar-title">
-    <a class="button back" href="#">Back</a>
-    <div id="timer" class="timer title">0:00</div>
+    <a id="back" class="button back" href="#">Back</a>
+    <div id="timer" class="timer title">00:00:00.0</div>
     <a class="button pull-right" id="start">Start</a>
-    <a class="button pull-right" id="pause">Pause</a>
-    <a class="button pull-right" id="resume">Resume</a>
+    <a class="button pull-right" id="pause">Pause</a>  
 </header>
-<div class="content content-padded">
-{{#if .}}
-    <img src="https://graph.facebook.com/me/picture?width=150&height=150" class="avatar" />
-    <h2>{{ name }}</h2>
-    <p>{{description}}</p>
-    <br/>
-    <a href="#workout?deckId={{ objectId }}" class="button-block">New Workout</a>
-{{/if}}
+<div id="canvas" class="content content-padded">
+    <a href="#" id="next" class="button-block">next</a>
+    <!-- Icons in standard bar fixed to the bottom of the screen -->
+    <div class="bar bar-footer">
+      <div class="progress progress-striped active">
+          <div id="progress-bar" class="progress-bars" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: {{percentComplete}}%">
+          </div>
+      </div>
+    </div>
 </div>
+<div id="pause-modal" class="modal">
+  <header class="bar-title">
+    <a class="icon icon-close pull-right"></a>
+    <h1 class="title">Paused</h1>
+  </header>
+  <div class="content">
+    <h2 id="duration">00:00.0</h2>
+    <ul class="list inset">
+      <li>
+        <label>Start Date</label>
+        <span id="start-date">not started</span>
+      </li>
+      <li>
+        <label>Total Time</label>
+        <span id="total-time">00:00:00.0</span>
+      </li>      
+      <li>
+        <label>Progress</label>
+        <span id="progress">24/54</span>
+      </li>
+    </ul>
+    <div class="content-padded">
+      <a href="#" id="previous" class="button-block">Previous</a>
+      <a id="resume" class="button-block">Resume</a>
+      <a id="exit" class="button button-block" href="#">Exit</a>
+    </div>
+  </div>
+</div>
+

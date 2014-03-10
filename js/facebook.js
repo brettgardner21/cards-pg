@@ -34,7 +34,7 @@ parseWrapper = {
             deferred.fail();
           }
         });
-        return deferred;
+        return deferred.promise();
     }
 
 }

@@ -48,3 +48,17 @@ img.avatar {
 .fb .caption {
     margin-bottom: 4px;
 }
+
+.list.inset label {
+  float: left;
+  width: 40%;
+  font-weight: bold;
+}
+.modal h2 {
+    text-align: center;
+    padding:10px;
+}
+.modal p {
+    text-align: center;
+    padding-top:10px;
+}

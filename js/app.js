@@ -4,11 +4,6 @@ window.addEventListener('load', function () {
 
 var fb = new MobileApp();
 
-/*temporary jimmy hat for models file*/
-fb.models.Deck = Parse.Object.extend("Deck");
-fb.models.Workout = Parse.Object.extend("Workout");
-fb.models.WorkoutCard = Parse.Object.extend("WorkoutCard");
-
 /*Parse stuff for now */
 Parse.initialize("h4t4vpIJakzrHVXwSvvfBwwTJL5ZCbGD6cTzWhKo", "jQRZxUSfeC0W5wflwFDjhEaoVfHS1600k3Y0KT5K");
 
@@ -35,7 +30,7 @@ fb.MobileRouter = Backbone.Router.extend({
         "decks":                    "decks",
         "deck/:id":                 "deck",
         "workout":                  "workout",
-        'workout?*deckId' :         "workout"
+        "workout/:id" :             "workout"
     },
 
     welcome: function () {
@@ -186,9 +181,9 @@ fb.MobileRouter = Backbone.Router.extend({
             fb.spinner.show();
         });
         
-        var query = new Parse.Query(fb.models.Deck);
-        var call = parseWrapper.find(query);
-
+        //var query = new Parse.Query(fb.models.Deck);
+        //var call = parseWrapper.find(query);
+        var call = fb.DeckController.getDecks();
         $.when(slide, call)
             .done(function(slideResp,callResp) {
                 view.model = callResp;
@@ -209,14 +204,14 @@ fb.MobileRouter = Backbone.Router.extend({
             fb.spinner.show();
         });
 
-        
-        var query = new Parse.Query(fb.models.Deck);
-        query.equalTo("objectId", id);
-        var call = parseWrapper.find(query);
+        //var query = new Parse.Query(fb.models.Deck);
+        //query.equalTo("objectId", id);
+        //var call = parseWrapper.find(query);
+        var call = fb.DeckController.getDeck(id);
 
         $.when(slide, call)
             .done(function(slideResp,callResp) {
-                view.model = callResp[0];
+                view.model = callResp;
                 view.render();
             })
             .fail(function() {
@@ -227,17 +222,20 @@ fb.MobileRouter = Backbone.Router.extend({
             });
     },
 
-    workout: function () {
+    workout: function (id) {
         var self = this;
-        var view = new fb.views.Workout({template: fb.templateLoader.get('workout')});
+        //need to make this deferred later
+        var workout = fb.WorkoutController.getWorkout(id);
+
+        var view = new fb.views.Workout({template: fb.templateLoader.get('workout'), model: workout});
+
         var slide = fb.slider.slidePage(view.$el).done(function(){
             fb.spinner.show();
         });
 
         $.when(slide)
             .done(function(slideResp) {
-                view.render();
-                var ws = new WorkoutSession(cards);
+                var ws = new WorkoutSession(null, workout);
             })
             .fail(function() {
                 self.showErrorPage();
@@ -287,13 +285,13 @@ fb.MobileRouter = Backbone.Router.extend({
 
 $(document).on('ready', function () {
 
-    fb.templateLoader.load(['menu', 'welcome', 'login', 'person', 'friends', 'feed', 'post', 'postui', 'error', 'revoke', 'decks', 'deck', 'workout'], function () {
+    fb.templateLoader.load(['menu', 'welcome', 'login', 'person', 'friends', 'feed', 'post', 'postui', 'error', 'revoke', 'decks', 'deck', 'workout','card','card2'], function () {
         fb.router = new fb.MobileRouter();
         Backbone.history.start();
-        FB.init({ appId: "306588442718313", nativeInterface: CDV.FB, useCachedDialogs: false, status: true });
+        //FB.init({ appId: "306588442718313", nativeInterface: CDV.FB, useCachedDialogs: false, status: true });
         /*enable below for local testing*/
-        //fb.slider.removeCurrentPage();
-        //fb.router.navigate("menu", {trigger: true});
+        fb.slider.removeCurrentPage();
+        fb.router.navigate("menu", {trigger: true});
     });
 
     FB.Event.subscribe('auth.statusChange', function(event) {
