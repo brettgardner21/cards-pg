@@ -288,10 +288,10 @@ $(document).on('ready', function () {
     fb.templateLoader.load(['menu', 'welcome', 'login', 'person', 'friends', 'feed', 'post', 'postui', 'error', 'revoke', 'decks', 'deck', 'workout','card','card2'], function () {
         fb.router = new fb.MobileRouter();
         Backbone.history.start();
-        //FB.init({ appId: "306588442718313", nativeInterface: CDV.FB, useCachedDialogs: false, status: true });
+        FB.init({ appId: "306588442718313", nativeInterface: CDV.FB, useCachedDialogs: false, status: true });
         /*enable below for local testing*/
-        fb.slider.removeCurrentPage();
-        fb.router.navigate("menu", {trigger: true});
+        //fb.slider.removeCurrentPage();
+        //fb.router.navigate("menu", {trigger: true});
     });
 
     FB.Event.subscribe('auth.statusChange', function(event) {
