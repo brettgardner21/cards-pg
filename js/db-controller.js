@@ -98,6 +98,7 @@
 
     // Generic db transaction Error Handler Callback
     onError: function(tx, e) {
+      debugger;
       console.log('There has been an error: ' + e.message);
     },
 

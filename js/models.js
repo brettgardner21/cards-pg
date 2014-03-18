@@ -54,10 +54,12 @@ fb.collections.WorkoutCards = Backbone.Collection.extend({
   comparator: 'position'
 });
 
+//Jill's ID 518798258
+//Brett's ID 519337450
+
 fb.models.Workout = Backbone.Model.extend({
   dao: fb.WorkoutDao,
   defaults: {
-    userid: 10151729718357451,
     deckid: 1,
     last_modified: new Date(),
     duration: 0,
@@ -65,8 +67,8 @@ fb.models.Workout = Backbone.Model.extend({
   },
   initialize: function() {
     var cards = new fb.collections.WorkoutCards();
-    cards.push(new fb.models.WorkoutCard());
     this.set('cards', cards);
+    this.set('userid',fb.user.id); //uncomment this for live
   },
   percentComplete: function() {
     var completed = this.get('cards').where({complete: true}).length;
@@ -81,12 +83,20 @@ fb.models.Workout = Backbone.Model.extend({
   },
   getPosition: function() {
     return this.get('cards').where({complete: true}).length;
+  },
+  for_template: function() {
+    var j = this.toJSON();
+    j.getDuration = this.getDuration();
+    return j;
   }
 });
 
 fb.collections.Workouts = Backbone.Collection.extend({
   model: fb.models.Workout,
-  controller: fb.dbController
+  controller: fb.dbController,
+  for_template: function() {
+    return this.map(function(model){ return model.for_template(); });
+  }
 });
 
 

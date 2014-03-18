@@ -36,7 +36,8 @@
 <script src="http://ajax.aspnetcdn.com/ajax/mobileservices/MobileServices.Web-1.1.0.min.js"></script>
 <script src="lib/cordova.js"></script>
 <script src="lib/cdv-plugin-fb-connect.js"></script>
-<script src="lib/facebook-js-sdk.js"></script>
+<!-- <script src="lib/facebook-js-sdk.js"></script> -->
+<script src="//connect.facebook.net/en_US/all.js"></script>
 <script src="lib/parse-1.2.8.min.js"></script>
 <script src="lib/fastclick.js"></script>
 <script src="lib/pageslider.js"></script>
@@ -55,19 +56,6 @@
 <script src="js/deck-controller.js"></script>
 <script src="js/views.js"></script>
 <script src="js/facebook.js"></script>
-<script id="cardTemplate" type="text/x-jquery-tmpl">
-<div id="${cardId}" class="click panel">
-    <div class="front" style="background-image: url(img/family2x.jpg);">
-        <div class="action">flip</div>
-        <h2>${face} ${suit}</h2>
-    </div>
-    <div class="back">
-        <div class="action">flip back</div>
-        <div class="pad">
-                <h2>check you on the flip side</h2>
-        </div>
-    </div>
-</div>
 </script>
 
 </html>

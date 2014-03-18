@@ -16,7 +16,18 @@ fbWrapper = {
         return deferred;
     },
     getAppFriends: function(){
-        return this.api('/fql?q=SELECT uid, name, is_app_user, pic_square FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = 1');
+        var deferred = $.Deferred();
+        try {
+            FB.api('/fql',{q:"SELECT uid, name, is_app_user, pic_square FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = 1"},
+            function(response){
+                deferred.resolve(response.data);
+            });
+
+        } catch (e) {
+            deferred.fail();
+        }
+        return deferred;
+
     }
 
 };

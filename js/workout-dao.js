@@ -2,13 +2,7 @@
 
   'use strict';
 
-  /*Azure Mobile Services Test */
-  var client = new WindowsAzure.MobileServiceClient(
-    'https://cardsworkout.azure-mobile.net/',
-    'qlIVvwDtVnqyEMnVKMtfIRVrSysAow55'
-  );
-
-  var workoutTable = client.getTable('workout');
+  var workoutTable = app.client.getTable('workout');
 
   app.WorkoutDao = {
 
@@ -81,7 +75,8 @@
       });
 
     },
-
+    //TODO: Make syncdate available locally with new api.
+    // Combine update statements to only sync online if last mod > syncdate
     update: function(model, callback) {
       var that = this;
       var db = this.db;
@@ -104,6 +99,33 @@
         );
       });
     },
+    updateLocal: function(workouts, callback) {
+      var that = this;
+
+      var deferred = $.Deferred();
+      var db = this.db;
+      db.transaction(
+        function(tx) {
+          var l = workouts.length;
+          var sql =
+            "INSERT OR REPLACE INTO workouts (id, userid, deckid, last_modified, duration, cards, syncDate) " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?)";
+          var w;
+          for (var i = 0; i < l; i++) {
+            w = workouts[i];
+            var params = [w.id, w.userid, w.deckid, w.last_modified.toISOString(), w.duration, JSON.stringify(w.cards), w.__updatedAt.toISOString()];
+            tx.executeSql(sql, params);
+          }
+        },
+        that.onError,
+        function(tx) {
+          if (callback) callback();
+          deferred.resolve("success");
+        }
+      );
+
+      return deferred;
+    },
 
     updateOnline: function(model, callback) {
 
@@ -112,9 +134,9 @@
 
 
       //TODO  This needs to work with backbone models AND results from sqlite
-      if(model instanceof Backbone.Model){
+      if (model instanceof Backbone.Model) {
         modelJSON = model.toJSON();
-      }else{
+      } else {
         modelJSON = model;
       }
 
@@ -244,20 +266,29 @@
 
       });
       return deferred;
-      // var that = this;
-      // debugger;
-      // this.db.transaction(
-      //       function(tx) {
-      //           var sql = 'SELECT (last_modified) as syncDate FROM workouts';
-      //           tx.executeSql(sql,that.onError,
-      //               function(tx, results) {
-      //                 console.log(results);
-      //                   var lastSync = results.rows.item(0).syncDate;
-      //                   callback(lastSync.toString());
-      //               }
-      //           );
-      //       }
-      //   );
+    },
+    getLastModifiedDate: function() {
+
+      var db = this.db;
+
+      //Convert to Deferred
+      var deferred = $.Deferred();
+
+      db.transaction(function(tx) {
+        //tx.executeSql('SELECT MAX(last_modified) FROM workouts',that.onError,that.onSuccess);
+        tx.executeSql('SELECT MAX(last_modified) as last_modified FROM workouts', [],
+          function(tx, results) {
+            debugger;
+            var lastMod = results.rows.item(0).last_modified;
+            deferred.resolve(lastMod);
+          },
+          function(tx, e) {
+            console.log('error:' + e);
+            deferred.fail();
+          });
+
+      });
+      return deferred;
     },
 
     /* Sync Up
@@ -282,24 +313,6 @@
             //insert online?
             that.insertOnline(results[i]);
 
-            // console.log(JSON.stringify(results[i]));
-            // workoutTable.insert(JSON.stringify(results[i])).done(function(res) {
-            //   console.log(JSON.stringify(res));
-            //   //update local record with confirmed syncdate
-            //   that.db.transaction(function(tx) {
-            //     tx.executeSql('UPDATE workouts set syncDate = ? WHERE ID = ?', [
-            //         res.__updatedAt,
-            //         res.id
-            //       ],
-            //       that.onSuccess,
-            //       that.onError
-            //     );
-            //   });
-
-            // }, function(error) {
-            //   app.alert(JSON.parse(error.request.responseText).error);
-            // });
-
           } else {
             that.updateOnline(results[i]);
           }
@@ -310,17 +323,93 @@
     },
     syncDown: function(callback) {
       var that = this;
-      this.getLastSync().then(function(lastSync) {
-        workoutTable.read().then(function(workouts) {
-          console.log(workouts);
-        });
 
+      var deferred = $.Deferred();
+
+      //Get Local Last Modified Date
+      var step1 = this.getLastModifiedDate();
+
+      //Grab Online records I don't have locally
+      var step2 = step1.then(function(lastMod) {
+        return that.getWorkoutsOnlineSince(lastMod);
       });
 
+      //Update those records locally
+      var step3 = step2.then(function(workouts) {
+        return that.updateLocal(workouts, callback);
+      });
+
+      //return success
+      var step4 = step3.done(function(message) {
+        deferred.resolve(message);
+      });
+
+      return deferred;
+
+    },
+    syncWorkouts: function(callback) {
+
+      var that = this;
+      this.syncDown().then(function(message) {
+        that.syncUp();
+      });
+
+    },
+    getWorkoutsOnlineSince: function(date) {
+
+      var deferred = $.Deferred();
+      //get workouts since the beginning of time if no date;
+      if (!date) date = new Date(0).toISOString();
+
+      //limited to 1000 rows max.
+      //This may be a problem if someone has more than 3 years of historical data and are starting form scratch.
+      workoutTable.take(1000).where(function(modDate) {
+        return this.last_modified > modDate;
+      }, date).read().done(
+        function(results) {
+          deferred.resolve(results);
+        },
+        function(error) {
+          console.log(JSON.parse(error.request.responseText).error);
+          deferred.fail();
+        });
+      return deferred;
+    },
+    getWorkoutStream: function() {
+
+      // Best practice. http://blog.mediumequalsmessage.com/promise-deferred-objects-in-javascript-pt2-practical-use
+      // Name each step
+      // New step = previous step.then()
+      // TODO: Refactor all other deferreds to follow this paradigm
+
+      var deferred = $.Deferred();
+      var step1 = fbWrapper.getAppFriends();
+      var step2 = step1.then(function(friends) {
+        //convert friends array to array of only ids
+        var ids = friends.map(function(x) {
+          return x.uid;
+        });
+        return ids;
+      });
+      var step3 = step2.done(function(friendIds) {
+        //take the array of ids and pull from server
+        // http://stackoverflow.com/questions/15464832/how-to-query-rows-where-id-in-some-array-of-numbers-in-azure-mobile-services
+        workoutTable.where(function(arr) {
+          return this.userid in arr;
+        }, friendIds).read().done(
+          function(results) {
+            //Turn result into collection
+            var workouts = new app.collections.Workouts(results);
+            console.log(JSON.stringify(workouts.for_template()));
+            deferred.resolve(workouts.for_template());
+          },
+          function(error) {
+            console.log(JSON.parse(error.request.responseText).error);
+            deferred.fail();
+          });
+      });
+      return deferred;
     }
-  }
-
-  app.WorkoutDao.syncDown();
-
+  };
 
 })(fb);

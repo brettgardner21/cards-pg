@@ -61,6 +61,12 @@ var MobileApp = function() {
 
         return addZ(hrs) + ':' + addZ(mins) + ':' + addZ(secs) + '.' + (ms+"")[0];
     };
+    
+    /*Azure Mobile Services Test */
+    this.client = new WindowsAzure.MobileServiceClient(
+        'https://cardsworkout.azure-mobile.net/',
+        'qlIVvwDtVnqyEMnVKMtfIRVrSysAow55'
+    );
 
     this.initialize();
 

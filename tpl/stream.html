@@ -1,0 +1,18 @@
+<header class="bar-title">
+    <a class="button back" href="#">Back</a>
+    <h1 class="title">Friend Stream</h1>
+</header>
+<div class="content">
+{{#if .}}
+<ul class="list">
+    {{#each .}}
+    <li>
+        {{#if deckid}}<strong>Deck</strong>{{deckid}}<br/>{{/if}}
+        {{#if userid}}<strong>User</strong>{{userid}}<br/>{{/if}}
+        {{#if last_modified}}<strong>Date</strong>{{last_modified}}<br/>{{/if}}
+        {{#if duration}}<strong>Duration</strong>{{duration}}{{/if}}
+    </li>
+    {{/each}}
+</ul>
+{{/if}}
+</div>

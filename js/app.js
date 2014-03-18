@@ -5,7 +5,7 @@ window.addEventListener('load', function () {
 var fb = new MobileApp();
 
 /*Parse stuff for now */
-Parse.initialize("h4t4vpIJakzrHVXwSvvfBwwTJL5ZCbGD6cTzWhKo", "jQRZxUSfeC0W5wflwFDjhEaoVfHS1600k3Y0KT5K");
+//Parse.initialize("h4t4vpIJakzrHVXwSvvfBwwTJL5ZCbGD6cTzWhKo", "jQRZxUSfeC0W5wflwFDjhEaoVfHS1600k3Y0KT5K");
 
 fb.spinner = $("#spinner");
 fb.spinner.hide();
@@ -30,7 +30,8 @@ fb.MobileRouter = Backbone.Router.extend({
         "decks":                    "decks",
         "deck/:id":                 "deck",
         "workout":                  "workout",
-        "workout/:id" :             "workout"
+        "workout/:id" :             "workout",
+        "stream":                   "stream"
     },
 
     welcome: function () {
@@ -264,6 +265,25 @@ fb.MobileRouter = Backbone.Router.extend({
                 fb.spinner.hide();
             });
     },
+    stream: function () {
+        var self = this;
+        var view = new fb.views.Feed({template: fb.templateLoader.get('stream')});
+        var slide = fb.slider.slidePage(view.$el).done(function() {
+            fb.spinner.show();
+        });
+        var call = fb.WorkoutDao.getWorkoutStream();
+        $.when(slide, call)
+            .done(function(slideResp, callResp) {
+                view.model = callResp;
+                view.render();
+            })
+            .fail(function() {
+                self.showErrorPage();
+            })
+            .always(function() {
+                fb.spinner.hide();
+            });
+    },
 
     post: function () {
         fb.slider.slidePage(new fb.views.Post({template: fb.templateLoader.get("post")}).$el);
@@ -285,17 +305,44 @@ fb.MobileRouter = Backbone.Router.extend({
 
 $(document).on('ready', function () {
 
-    fb.templateLoader.load(['menu', 'welcome', 'login', 'person', 'friends', 'feed', 'post', 'postui', 'error', 'revoke', 'decks', 'deck', 'workout','card','card2'], function () {
+    fb.templateLoader.load(['menu', 'welcome', 'login', 'person', 'friends', 'feed', 'post', 'postui', 'error', 'revoke', 'decks', 'deck', 'workout','card','card2','stream'], function () {
         fb.router = new fb.MobileRouter();
         Backbone.history.start();
-        FB.init({ appId: "306588442718313", nativeInterface: CDV.FB, useCachedDialogs: false, status: true });
+
+        /*enable for native testing*/
+        //FB.init({ appId: "306588442718313", nativeInterface: CDV.FB, useCachedDialogs: false, status: true });
+        
         /*enable below for local testing*/
-        //fb.slider.removeCurrentPage();
-        //fb.router.navigate("menu", {trigger: true});
+        FB.init({
+            appId      : '306588442718313',
+            status     : true, // check login status
+            cookie     : true, // enable cookies to allow the server to access the session
+            xfbml      : false  // parse XFBML
+        });
+        // fb.slider.removeCurrentPage();
+        // fb.router.navigate("menu", {trigger: true});
     });
 
     FB.Event.subscribe('auth.statusChange', function(event) {
         if (event.status === 'connected') {
+
+            //Experiment:  Let the mobile client know
+            // $.post("https://cardsworkout.azure-mobile.net/login/facebook",
+            //     {
+            //         "access_token" : FB.getAccessToken()
+            //     }).done(function( data ) {
+            //         console.log("Successfully logged in to mobile client");
+            //   });
+            var token = FB.getAccessToken();
+            fb.client.login(
+                 "facebook", 
+                 {"access_token": token})
+            .done(function (results) {
+                 alert("You are now logged in as: " + results.userId);
+            }, function (err) {
+                 alert("Error: " + err);
+            });
+
             FB.api('/me', function (response) {
                 fb.user = response; // Store the newly authenticated FB user
             });
